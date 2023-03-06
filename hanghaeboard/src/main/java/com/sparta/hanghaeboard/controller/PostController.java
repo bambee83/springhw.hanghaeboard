@@ -21,6 +21,8 @@ import com.sparta.hanghaeboard.service.PostService;
 import com.sun.istack.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;      //임포트들
 
@@ -48,8 +50,7 @@ public class PostController {
 
     //선택 게시글 조회 (게시글의 id를 특정하여 받아온다)
     @GetMapping("/api/posts/{id}")
-    public PostResponseDto getPosts(@PathVariable Long id) {
-        return postService.getPost(id);
+    public PostResponseDto getPosts(@PathVariable Long id) {return postService.getPost(id);
     }
 
     //선택 게시글 수정 > id와 수정될 정보를 받아온다
@@ -57,8 +58,8 @@ public class PostController {
     public PostResponseDto updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
         return postService.update(id, requestDto);
     }
-    //선택 게시글 삭제
 
+    //선택 게시글 삭제
     @DeleteMapping("/api/posts/{id}")
     public Map<String,Object> deletePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto) {
         return postService.deletePost(id, requestDto); // 자바컬랙션 <Map>

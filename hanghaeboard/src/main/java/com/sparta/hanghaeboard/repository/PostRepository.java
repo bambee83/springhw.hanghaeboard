@@ -4,11 +4,13 @@ package com.sparta.hanghaeboard.repository;
 import com.sparta.hanghaeboard.entity.Post;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
+import java.util.Optional;
 
 //  JpaRepository<Post, Long>  > @Entity 의 테이블과 통신할 수 있다.
 //jpa repo 의 상속을 받는 Post repo 인터페이스, <Type, id > : 어떤 테이블과 연결하는지
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByModifiedAtDesc();
+    Optional<Post> findByIdAndUserId(Long id, Long userId);
 }
 
 
