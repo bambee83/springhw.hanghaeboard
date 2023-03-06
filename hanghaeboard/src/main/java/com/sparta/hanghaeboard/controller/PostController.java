@@ -35,10 +35,6 @@ public class PostController {
 // 2. 필요한 데이터를 받아서 postTable 에 저장할거에요
 // 3. PostRequestDto 는 사용자가 보낸 데이터를 Model 계층(Service)으로 보내요
 
-    //회원가입
-
-    //로그인
-
     //게시글 작성
     @PostMapping("/api/posts") //PostRequestDto 는 Post 의 내용을 값으로 가지고 있다
     public PostResponseDto createPost(@RequestBody PostRequestDto requestDto) {

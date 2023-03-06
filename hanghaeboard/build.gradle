@@ -31,11 +31,11 @@ dependencies { // 외부라이브러리라고 생각
 
     implementation group: 'org.json', name: 'json', version: '20220924'
 
-    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'
+    compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2'  //jwt *3
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-    implementation 'org.springframework.boot:spring-boot-starter-validation' // 객체의 제약 조건을 검증
+    implementation 'org.springframework.boot:spring-boot-starter-validation' // 객체의 제약 조건을 검증 (유효성검사)
 }
 
 tasks.named('test') {
