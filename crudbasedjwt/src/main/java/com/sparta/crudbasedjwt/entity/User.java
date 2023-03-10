@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter @NoArgsConstructor @Entity(name="users") //예약어 user 변경 !
 public class User {
@@ -16,14 +17,18 @@ public class User {
     private String username;
     @Column(nullable = false)
     private String password;
-//    @Column(nullable = false)
-//    @Enumerated(value=EnumType.STRING) //Jpa 심화강의 참고 (?????)
-//    private UserRoleEnum role;
+
+    @Column(nullable = false)
+    @Enumerated(value=EnumType.STRING) // 이넘을 테이블에서 사용하겠다 !! / 일반적으로 스트링사용 (cf. orginal)
+    private UserRoleEnum role;
+
+    @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE) // 이게 뭔지는 모르지만 없으면 안된다...
+    private List<Post> post;
 
     //생성자를 통한 초기화 .. 문득 @AllArgs 나 required 를 넣어주면 이거 없어도 되지 않나...
-    public User(String username, String password) {
+    public User(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;
-//        this.role = role;
+        this.role = role;
     }
 }

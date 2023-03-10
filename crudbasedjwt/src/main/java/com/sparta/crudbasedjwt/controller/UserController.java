@@ -29,6 +29,6 @@ public class UserController {
     public ResponseEntity<StatusCodeDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         userService.login(loginRequestDto, response);
         return ResponseEntity.ok(new StatusCodeDto(200,"로그인성공"));  //서비스단 말고 컨트롤러 단에서 엔티티객체사용 반환함
-                                                                                            // 바디타입은 <statuscodedto> 대충.. 이해는감...
+                                                                                      // 바디타입은 <statuscodedto> 대충.. 이해는감...
     }
 }

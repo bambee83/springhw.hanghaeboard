@@ -30,7 +30,7 @@ public class JwtUtil {
     // TOKEN 식별자
     private static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
-    private static final long TOKEN_TIME = 60 * 60 * 1000L; //1시간
+    private static final long TOKEN_TIME = 60 * 60 * 1000L; //1시간 (ms 기준)
 
     @Value("${jwt.secret.key}")  //application property 키값을 가져온다
     private String secretKey;
@@ -39,7 +39,7 @@ public class JwtUtil {
 
     @PostConstruct //처음에 객체를 생성할 때 초기화하는 함수 > 구글링해서 한 번 읽어보기
     public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey); //값을 가져와서 디코딩
+        byte[] bytes = Base64.getDecoder().decode(secretKey); //값을 가져와서 디코딩 (반환값이 바이트임)
         key = Keys.hmacShaKeyFor(bytes); // 키객체에 만들어진 바이트값 넣어주기
     }
 
@@ -52,24 +52,24 @@ public class JwtUtil {
         return null;
     }
 
-    // 토큰 생성 > 이름과 권한 필요함
-    public String createToken(String username) {
+    // 토큰 생성 > 스트링 형식의 JSON 토큰으로 반환된다
+    public String createToken(String username, UserRoleEnum role) {  //이름 과 권한을 줘야 함
         Date date = new Date();
 
         return BEARER_PREFIX +
                 Jwts.builder()
                         .setSubject(username)
-                        .claim(AUTHORIZATION_KEY, username)
+                        .claim(AUTHORIZATION_KEY, role)
                         .setExpiration(new Date(date.getTime() + TOKEN_TIME)) //현재시간 + 토큰시간
                         .setIssuedAt(date)
                         .signWith(key, signatureAlgorithm)
                         .compact();
     }
 
-    // 토큰 검증
+    // 토큰 검증 > //내부적으로 토큰 검증
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); //내부적으로 토큰 검증
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
@@ -83,7 +83,7 @@ public class JwtUtil {
         return false;
     }
 
-    // 토큰에서 사용자 정보 가져오기 > 앞에서 토큰을 감증해서 유효한 토큰임 확인해서 try catch 가 없다.
+    // 토큰에서 사용자 정보 가져오기 > 앞에서 토큰을 검증해서 유효한 토큰임을 확인해서 try catch 가 없다.
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody(); //getBody 를 통해 정보를 가져온다
     }
