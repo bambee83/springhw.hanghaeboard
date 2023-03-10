@@ -2,7 +2,6 @@ package com.sparta.crudbasedjwt.service;
 
 import com.sparta.crudbasedjwt.dto.CommentRequestDto;
 import com.sparta.crudbasedjwt.dto.CommentResponseDto;
-import com.sparta.crudbasedjwt.dto.PostResponseDto;
 import com.sparta.crudbasedjwt.dto.StatusCodeDto;
 import com.sparta.crudbasedjwt.entity.Comment;
 import com.sparta.crudbasedjwt.entity.Post;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
 
 @Service @RequiredArgsConstructor
 public class CommentService {
@@ -70,7 +68,7 @@ public class CommentService {
         Claims claims;
 
         // 토큰이 있는 경우에만 게시글 등록 가능
-        if (token != null && jwtUtil.validateToken(token)) {
+        if (token != null && jwtUtil.validateToken(token)) { // JWT의 유효성을 검증하여 올바른 JWT인지 확인??
             // 토큰에서 사용자 정보 가져오기
             claims = jwtUtil.getUserInfoFromToken(token);
 
@@ -79,10 +77,20 @@ public class CommentService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
 
-            // 댓글에 일치하는 댓글 아이디와 작성자 이름이 있는지 확인
-            Comment comment = commentRepository.findByIdAndUserId(commentId, user.getId()).orElseThrow(
-                    () -> new NullPointerException("해당 댓글이 존재하지 않습니다.")
+            // 게시글의 DB 저장 유무 확인
+            Post post = postRepository.findById(id).orElseThrow(
+                    () -> new NullPointerException("일치하는 게시글 없음")
             );
+
+            Comment comment;
+            // 유저의 권한이 admin과 같으면 모든 데이터 수정 가능
+            if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+                comment = commentRepository.findById(commentId).orElseThrow(
+                        () -> new NullPointerException("일치하는 댓글 없음"));
+            } else {
+                comment = commentRepository.findByIdAndUserId(commentId, user.getId()).orElseThrow(
+                        () -> new NullPointerException("작성자만 수정할 수 있음"));
+            }
 
             comment.setComment(commentRequestDto.getComment());
 
@@ -134,4 +142,3 @@ public class CommentService {
 }
 
 
-//return ResponseEntity.ok(new StatusCodeDto(HttpStatus.BAD_REQUEST.value(),"댓글 삭제 성공"));

@@ -27,3 +27,9 @@ public class SignupRequestDto {
 
 //관리자 가입토큰 : AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC > boolean true 로 반환
 // @Pattern(regexp = "^[a-zA-Z0-9]{8,15}$")  > 영미님 방법
+
+//@Size: 해당 값이 주어진 값 사이에 해당하는지 검증함(String, Collection, Map, Array 에도 적용 가능)
+//@Pattern: 해당 값이 주어진 패턴과 일치하는지 검증함 //regexp(=regular expression) 정규표현식
+// 알파벳 대소문자(a~z, A~Z), 숫자(0~9), 특수문자 로 구성
+// @Pattern(regexp = "[a-zA-z0-9]+@[a-zA-z]+[.]+[a-zA-z.]+") < 패턴 사용법
+// 패턴 끝에 있는 *를 사용하면 문자열에 지정된 문자와 기호가 0개 이상 포함될 수 있습니다.

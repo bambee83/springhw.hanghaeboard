@@ -13,3 +13,6 @@ public class StatusCodeDto {
         this.msg = msg;
     }
 }
+
+
+//return ResponseEntity.ok(new StatusCodeDto(HttpStatus.BAD_REQUEST.value(),"나쁜 요청입니다 "));

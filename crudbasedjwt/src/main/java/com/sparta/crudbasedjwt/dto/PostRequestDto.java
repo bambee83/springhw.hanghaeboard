@@ -10,3 +10,5 @@ public class PostRequestDto { //id 는 자동으로 생성 !
     private String title;
     private String content;
 }
+
+//@Tostring ??  ToString() 메소드 자동생성 (롬복패키지)

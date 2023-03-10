@@ -1,9 +1,7 @@
 package com.sparta.crudbasedjwt.service;
 
-import com.sparta.crudbasedjwt.dto.PostListResponseDto;
-import com.sparta.crudbasedjwt.dto.PostRequestDto;
-import com.sparta.crudbasedjwt.dto.PostResponseDto;
-import com.sparta.crudbasedjwt.dto.StatusCodeDto;
+import com.sparta.crudbasedjwt.dto.*;
+import com.sparta.crudbasedjwt.entity.Comment;
 import com.sparta.crudbasedjwt.entity.Post;
 import com.sparta.crudbasedjwt.entity.User;
 import com.sparta.crudbasedjwt.entity.UserRoleEnum;
@@ -62,24 +60,31 @@ public class PostService {
 
     //전체 게시글 목록 조회
     @Transactional(readOnly = true)
-    public List<PostListResponseDto> getPostList() {
-        // PostResponseDto 객체만 들어올 수 있는 리스트 생성
-        List<PostListResponseDto> postResponseDto = new ArrayList<>();
-        // 데이터 베이스에서 찾은 모든값을 리스트로 저장
-        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc(); //내림차순정렬
-        for (Post post : postList) { // 리스트에서 하나씩 꺼내서 postResponseDtoList 리스트에 저장
-            postResponseDto.add(new PostListResponseDto(post));
+    public List<PostResponseDto> getPostList() {
+        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
+        List<PostResponseDto> postResponseDto = new ArrayList<>();
+        for (Post post : postList) {
+            List<CommentResponseDto> commentList = new ArrayList<>(); //Post안에 코멘트 리스트 넣어서 순환참조 방지하기.
+            for (Comment comment : post.getCommentList()) {
+                commentList.add(new CommentResponseDto(comment));
+            }
+            PostResponseDto postDto = new PostResponseDto(post, commentList);
+            postResponseDto.add(postDto);
         }
         return postResponseDto;
     }
 
     //선택 게시글 조회
     @Transactional(readOnly = true)
-    public PostListResponseDto getPost(Long id) {
+    public PostResponseDto getPost(Long id) {
         Post post = postRepository.findById(id).orElseThrow(
                 () -> new NullPointerException("일치하는 게시글 없음")
         );
-        return new PostListResponseDto(post);
+        List<CommentResponseDto> commentList = new ArrayList<>();
+        for (Comment comment : post.getCommentList()) {
+            commentList.add(new CommentResponseDto(comment));
+        }
+        return new PostResponseDto(post, commentList);
     }
 
     //선택 게시글 수정
@@ -100,14 +105,17 @@ public class PostService {
 
             // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-            );
-
-            // 게시글에 일치하는 게시글 아이디와 작성자 이름이 있는지 확인
-            Post post = postRepository.findByIdAndUsername(id, claims.getSubject()).orElseThrow(
-                    () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
-            );
-
+                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+            Post post;
+            //유저의 권한이 admin과 같으면 모든 데이터 수정 가능
+            if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+                post = postRepository.findById(id).orElseThrow(
+                        () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+            } else {
+                //유저의 권한이 admin이 아니면 아이디가 같은 유저만 수정 가능
+                post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                        () -> new IllegalArgumentException("작성자만 수정할 수 있습니다."));
+            }
             post.update(postRequestDto);  // 공부 필요 또는 세터쓰는 방법 (몇가지만 넘겨줄떄...? )
             return new PostResponseDto(post);
         }
@@ -115,7 +123,7 @@ public class PostService {
     }
     //선택 게시글 삭제
     @Transactional
-    public StatusCodeDto deletePost(Long id, HttpServletRequest request) {
+    public ResponseEntity<StatusCodeDto> deletePost(Long id, HttpServletRequest request) {
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -133,14 +141,18 @@ public class PostService {
             User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
-
-            Post post = postRepository.findByIdAndUsername(id, claims.getSubject()).orElseThrow(
-                    () -> new NullPointerException("해당 게시글이 존재하지 않습니다.")
-            );
-
+            Post post;
+            //유저의 권한이 admin과 같으면 모든 데이터 삭제 가능
+            if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+                post = postRepository.findById(id).orElseThrow(
+                        () -> new IllegalArgumentException("게시글이 존재하지 않습니다."));
+            } else {
+                //유저의 권한이 admin이 아니면 아이디가 같은 유저만 삭제 가능
+                post = postRepository.findByIdAndUserId(id, user.getId()).orElseThrow(
+                        () -> new IllegalArgumentException("작성자만 삭제할 수 있습니다."));
+            }
             postRepository.deleteById(id);
-//            ResponseEntity.ok(new StatusCodeDto(HttpStatus.OK.value(), "게시글 삭제 성공"));
-             return new  StatusCodeDto(200,"게시글 삭제 성공");
+            return ResponseEntity.ok(new StatusCodeDto(HttpStatus.OK.value(), "게시글 삭제 성공"));
         }
         throw new IllegalArgumentException("로그인 안함(토큰 없음)");
     }

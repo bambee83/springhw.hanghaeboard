@@ -36,6 +36,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-validation' // 객체의 제약 조건을 검증 (유효성검사)
 
+
+
 }
 
 tasks.named('test') {

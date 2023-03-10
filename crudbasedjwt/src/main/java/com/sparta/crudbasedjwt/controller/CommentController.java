@@ -4,7 +4,6 @@ package com.sparta.crudbasedjwt.controller;
 import com.sparta.crudbasedjwt.dto.CommentRequestDto;
 import com.sparta.crudbasedjwt.dto.CommentResponseDto;
 import com.sparta.crudbasedjwt.dto.StatusCodeDto;
-import com.sparta.crudbasedjwt.entity.User;
 import com.sparta.crudbasedjwt.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -34,4 +33,4 @@ public class CommentController {
         return commentService.deleteComment(id, commentId, request);}
 }
 
-// 생략시 @ModelAttribute ㄷ,ㄹ아ㅓㄹ니ㅗㄹ니ㅏㅇ혼이ㅗㄹ마;니론ㅇ'ㅣㅎ;ㅇ로
+// 생략시 @ModelAttribute

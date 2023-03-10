@@ -12,7 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 //    Optional<Post> findByIdAndUserId(Long id, Long userId);
 
     List<Post> findAllByOrderByCreatedAtDesc();
-    Optional<Post> findByIdAndUsername(Long id, String username);
+    Optional<Post> findByIdAndUserId(Long id, Long userid);
 
 
 

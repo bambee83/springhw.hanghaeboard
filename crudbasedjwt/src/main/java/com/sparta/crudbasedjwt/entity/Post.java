@@ -13,8 +13,7 @@ import java.util.List;
 // @Entity 는 course 를 테이블에 매핑하는 jpa 객체로 사용하겠다는 의미 vs @Tostring
 @Getter @NoArgsConstructor @Entity
 public class Post extends Timestamped { //타임스탬프 상속
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) //pk
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY) // 생성타입이 자동으로 + type.IDENTIFY 차이없음  //pk 값임
     private Long id; // Long 타입
 
     @Column(nullable = false)  // nullable : null 허용 여부 (false 일때 중복 허용)
@@ -41,7 +40,7 @@ public class Post extends Timestamped { //타임스탬프 상속
         this.user = user;
     }
 
-    //매소드 > 게시글 수정 데이터베이스는 소중해요 > 세터남발 x
+    //매소드 > 게시글 수정 데이터베이스는 소중해요 (dto 로 감싸서 쓰기) > 세터남발 x
     public void update(PostRequestDto postRequestDto) {
 //        this.username = postRequestDto.getUsername();
         this.content = postRequestDto.getContent();
