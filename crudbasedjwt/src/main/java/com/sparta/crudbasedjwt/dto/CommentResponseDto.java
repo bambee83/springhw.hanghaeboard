@@ -22,7 +22,5 @@ public class CommentResponseDto {
         this.comment = comment.getComment();
         this.createdAt = comment.getCreatedAt();
         this. modifiedAt = comment.getModifiedAt();
-
     }
-
 }

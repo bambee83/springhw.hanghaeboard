@@ -25,7 +25,7 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.REMOVE) // 이게 뭔지는 모르지만 없으면 안된다...
     private List<Post> post;
 
-    //생성자를 통한 초기화 .. 문득 @AllArgs 나 required 를 넣어주면 이거 없어도 되지 않나...
+    //생성자를 통한 초기화
     public User(String username, String password, UserRoleEnum role) {
         this.username = username;
         this.password = password;

@@ -5,7 +5,7 @@ import lombok.Setter;
 
 
 @Getter @Setter
-public class PostRequestDto { //id 는 자동으로 생성 !
+public class PostRequestDto { //id 는 자동으로 생성 !   > 클라에서 요청하는 거
 //    private String username;
     private String title;
     private String content;

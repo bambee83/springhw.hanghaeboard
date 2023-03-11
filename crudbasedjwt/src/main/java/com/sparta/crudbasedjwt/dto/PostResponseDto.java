@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Getter @NoArgsConstructor
-public class PostResponseDto { //pw 제외 나머지 필드생성
+public class PostResponseDto { //pw 제외 나머지 필드생성  > 클라에 주는 거 (응답)
     private Long id;
     private String username;
     private String title;

@@ -64,7 +64,7 @@ public class PostService {
         List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postResponseDto = new ArrayList<>();
         for (Post post : postList) {
-            List<CommentResponseDto> commentList = new ArrayList<>(); //Post안에 코멘트 리스트 넣어서 순환참조 방지하기.
+            List<CommentResponseDto> commentList = new ArrayList<>(); //Post안에 코멘트 리스트 넣어서 순환참조 방지하기
             for (Comment comment : post.getCommentList()) {
                 commentList.add(new CommentResponseDto(comment));
             }
@@ -73,6 +73,7 @@ public class PostService {
         }
         return postResponseDto;
     }
+
 
     //선택 게시글 조회
     @Transactional(readOnly = true)
@@ -90,6 +91,7 @@ public class PostService {
     //선택 게시글 수정
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto postRequestDto, HttpServletRequest request) {
+        //Request 에서 토큰 가져오기
         String token = jwtUtil.resolveToken(request);
         Claims claims;
 
@@ -156,6 +158,7 @@ public class PostService {
         }
         throw new IllegalArgumentException("로그인 안함(토큰 없음)");
     }
+
 }
 
 

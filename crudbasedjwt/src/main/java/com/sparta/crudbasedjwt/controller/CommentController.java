@@ -33,4 +33,4 @@ public class CommentController {
         return commentService.deleteComment(id, commentId, request);}
 }
 
-// 생략시 @ModelAttribute
+// 생략시 @ModelAttribute @RequestBody 객체로 들어온 바디를 제이슨 형식으로 변환해줍니다
