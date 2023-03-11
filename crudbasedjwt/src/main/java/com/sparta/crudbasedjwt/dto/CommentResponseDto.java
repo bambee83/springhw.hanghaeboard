@@ -24,3 +24,6 @@ public class CommentResponseDto {
         this. modifiedAt = comment.getModifiedAt();
     }
 }
+
+
+//final 로 dto 는 선언해 주는 것이 좋다 ! 불변의 느낌으로 .... setter 없을때 생성자만 있을때

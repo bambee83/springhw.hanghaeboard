@@ -52,8 +52,8 @@ public class PostService {
             );
 
             // 요청받은 DTO로 DB에 저장할 객체 만들기, 토큰에 있는 작성자 이름을 같이 넣음
-            Post post = postRepository.saveAndFlush(new Post(postRequestDto, user));  //영속성컨텍스트에 담겼다가 저장이 아닌 바로 데이터베이스에 인서트문을 날린다 !
-            return new PostResponseDto(post);
+            Post post = postRepository.saveAndFlush(new Post(postRequestDto, user));
+            return new PostResponseDto(post); //영속성컨텍스트에 담겼다가 저장이 아닌 바로 데이터베이스에 인서트문을 날린다 !
         }
         throw new IllegalArgumentException("로그인 안함(토큰 없음)");
     }
@@ -64,12 +64,11 @@ public class PostService {
         List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postResponseDto = new ArrayList<>();
         for (Post post : postList) {
-            List<CommentResponseDto> commentList = new ArrayList<>(); //Post안에 코멘트 리스트 넣어서 순환참조 방지하기
+            List<CommentResponseDto> commentList = new ArrayList<>();  //Post 안에 코멘트 리스트 넣어서 순환참조 방지하기
             for (Comment comment : post.getCommentList()) {
                 commentList.add(new CommentResponseDto(comment));
             }
-            PostResponseDto postDto = new PostResponseDto(post, commentList);
-            postResponseDto.add(postDto);
+            postResponseDto.add(new PostResponseDto(post, commentList));
         }
         return postResponseDto;
     }

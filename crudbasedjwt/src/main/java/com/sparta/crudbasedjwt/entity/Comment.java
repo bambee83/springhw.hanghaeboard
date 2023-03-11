@@ -22,7 +22,7 @@ public class Comment extends Timestamped {
     private Post post;
 
     @ManyToOne  //연관관계 매핑
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name ="user_id") //불필요한 쿼리를 줄여야 한다... stateless 하지않음 !
     private User user;
 
 
